@@ -164,4 +164,17 @@ app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
     console.log(`📧 Email service: ${process.env.EMAIL_USER ? 'Configured' : 'NOT configured - check .env file'}`);
 });
+const express = require('express');
+const path = require('path');
+const app = express();
+
+// Serve static files
+app.use(express.static('public'));
+
+// Root route serves your HTML
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(process.env.PORT || 3000, '0.0.0.0');
 
