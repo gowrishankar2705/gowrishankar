@@ -41,17 +41,27 @@ gowrishankar/
 - **Node.js** (v14 or higher)
 - **npm** (comes with Node.js)
 
-### Local Development
+---
+### ⚙️ Local Development
+**1.Clone the repository:**  
+     
+     git clone https://github.com/gowrishankar2705/gowrishankar.git
+     cd gowrishankar
+  
+**2.Install dependencies::**
 
-1. **Clone the repository:**
-git clone https://github.com/gowrishankar2705/gowrishankar.git
-cd gowrishankar
-2. **Install dependencies:**
-npm install
-3. **Run the development server:**
-node server.js
-4. **Open your browser:**
-Navigate to `http://localhost:3000` (or the port specified in server.js)
+    npm install
+    
+    
+**3.Run the development server:**
+
+    node server.js
+    
+**4.Open your browser:**  
+     
+     Navigate to `http://localhost:3000` (or the port specified in server.js)
+
+     
 
 ---
 
