@@ -165,8 +165,7 @@ app.listen(PORT, () => {
     console.log(`📧 Email service: ${process.env.EMAIL_USER ? 'Configured' : 'NOT configured - check .env file'}`);
 });
 
-const path = require('path');
-const app = express();
+
 
 // Serve static files
 app.use(express.static('public'));
