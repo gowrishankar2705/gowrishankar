@@ -164,7 +164,7 @@ app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
     console.log(`📧 Email service: ${process.env.EMAIL_USER ? 'Configured' : 'NOT configured - check .env file'}`);
 });
-const express = require('express');
+
 const path = require('path');
 const app = express();
 
