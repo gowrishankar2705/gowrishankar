@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gowrishankar - AI & Data Science Portfolio</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@11.5.4/dist/framer-motion.js"></script>
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #111111;
+            --color-primary: #00ffff;
+            --color-secondary: #ff00ff;
+            --color-accent: #00ff88;
+            --color-text: #ffffff;
+            --color-text-dim: #888888;
+            --color-border: rgba(0, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        #root {
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 10, 0.8);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 0 2rem;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--color-text-dim);
+            margin-bottom: 2rem;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--color-text-dim);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: var(--color-bg);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--color-primary);
+            top: 20%;
+            left: 10%;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--color-secondary);
+            bottom: 20%;
+            right: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .about-text p {
+            color: var(--color-text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-card {
+            background: var(--color-surface);
+            padding: 2rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--color-border);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .skill-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .project-card {
+            background: var(--color-surface);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-primary);
+            box-shadow: 0 15px 50px rgba(0, 255, 255, 0.2);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .project-content {
+            padding: 2rem;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-text);
+        }
+
+        .project-description {
+            color: var(--color-text-dim);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            padding: 0.4rem 1rem;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--color-primary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--color-primary);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            padding: 0.7rem 1.5rem;
+            background: transparent;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-link:hover {
+            background: var(--color-primary);
+            color: var(--color-bg);
+        }
+
+        /* Contact Section */
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-form {
+            background: var(--color-surface);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid var(--color-border);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--color-bg);
+            border: 2px solid var(--color-border);
+            border-radius: 10px;
+            color: var(--color-text);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border: none;
+            border-radius: 10px;
+            color: var(--color-bg);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .form-message.success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .form-message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--color-surface);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            color: var(--color-text);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            color: var(--color-primary);
+            transform: translateY(-5px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                padding: 2rem 1.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--color-primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { motion } = window.Motion;
+        const { useState, useEffect } = React;
+
+        // Navigation Component
+        const Navigation = () => {
+            const scrollToSection = (sectionId) => {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            return (
+                <motion.nav
+                    initial={{ y: -100 }}
+                    animate={{ y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                >
+                    <div className="nav-content">
+                        <motion.div 
+                            className="logo"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: "spring", stiffness: 400 }}
+                        >
+                            GS
+                        </motion.div>
+                        <ul className="nav-links">
+                            <motion.li whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                                <a onClick={() => scrollToSection('home')}>Home</a>
+                            </motion.li>
+                            <motion.li whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                                <a onClick={() => scrollToSection('about')}>About</a>
+                            </motion.li>
+                            <motion.li whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                                <a onClick={() => scrollToSection('projects')}>Projects</a>
+                            </motion.li>
+                            <motion.li whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                                <a onClick={() => scrollToSection('contact')}>Contact</a>
+                            </motion.li>
+                        </ul>
+                    </div>
+                </motion.nav>
+            );
+        };
+
+        // Hero Section Component
+        const Hero = () => {
+            const scrollToContact = () => {
+                document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+            };
+
+            const scrollToProjects = () => {
+                document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <section className="hero" id="home">
+                    <div className="bg-animation">
+                        <div className="orb orb-1"></div>
+                        <div className="orb orb-2"></div>
+                    </div>
+                    <div className="hero-content">
+                        <motion.h1 
+                            className="hero-title"
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.2 }}
+                        >
+                            Gowrishankar
+                        </motion.h1>
+                        <motion.p 
+                            className="hero-subtitle"
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.4 }}
+                        >
+                            AI & Data Science Engineer
+                        </motion.p>
+                        <motion.p 
+                            className="hero-description"
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.6 }}
+                        >
+                            Building intelligent systems with Computer Vision,Machine Learning, 
+                            and IoT | Transforming complex data into actionable insights
+                        </motion.p>
+                        <motion.div 
+                            className="cta-buttons"
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.8 }}
+                        >
+                            <motion.button 
+                                className="btn btn-primary"
+                                whileHover={{ scale: 1.05, boxShadow: "0 10px 40px rgba(0, 255, 255, 0.4)" }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={scrollToProjects}
+                            >
+                                View Projects
+                            </motion.button>
+                            <motion.button 
+                                className="btn btn-secondary"
+                                whileHover={{ scale: 1.05, borderColor: "var(--color-secondary)" }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={scrollToContact}
+                            >
+                                Get in Touch
+                            </motion.button>
+                        </motion.div>
+                    </div>
+                </section>
+            );
+        };
+
+        // About Section Component
+        const About = () => {
+            const skills = [
+                { icon: '🤖', name: 'Machine Learning' },
+                { icon: '👁️', name: 'Computer Vision' },
+                { icon: '🐍', name: 'Python' },
+                { icon: '⚛️', name: 'React' },
+                { icon: '🔌', name: 'IoT' },
+                { icon: '📊', name: 'Data Science' },
+                { icon: '🧠', name: 'Deep Learning' },
+                { icon: '📈', name: 'Analytics' }
+            ];
+
+            return (
+                <section id="about">
+                    <motion.h2 
+                        className="section-title"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        About Me
+                    </motion.h2>
+                    <div className="about-content">
+                        <motion.div 
+                            className="about-text"
+                            initial={{ opacity: 0, x: -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <h3>Building the Future with AI</h3>
+                            <p>
+                                I'm a passionate AI & Data Science engineer with hands-on experience 
+                                developing real-time dashboards, computer vision systems, and IoT solutions.
+                                I work on cutting-edge projects that bridge the gap between artificial intelligence
+                                and real-world applications
+                            </p>
+                            <p>
+                                My expertise spans across machine learning model development, real-time data processing, 
+                                API integration, and hardware-software integration with platforms like Raspberry Pi. 
+                                I'm particularly interested in Computer Vision, NLP, and building assistive technologies 
+                                that make a difference.
+                            </p>
+                        </motion.div>
+                        <motion.div 
+                            className="skills-grid"
+                            initial={{ opacity: 0, x: 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            {skills.map((skill, index) => (
+                                <motion.div
+                                    key={index}
+                                    className="skill-card"
+                                    initial={{ opacity: 0, y: 50 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                    whileHover={{ 
+                                        scale: 1.05,
+                                        rotate: [0, -5, 5, 0],
+                                        transition: { duration: 0.3 }
+                                    }}
+                                >
+                                    <div className="skill-icon">{skill.icon}</div>
+                                    <div className="skill-name">{skill.name}</div>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Projects Section Component
+        const Projects = () => {
+            const projects = [
+                {
+                    title: 'Real-time Energy Monitoring Dashboard',
+                    description: 'Built a professional-grade dashboard using Streamlit and Google Sheets API for real-time energy data visualization with automated polling and live updates for Enery Monitoring .',
+                    tags: ['Python', 'Streamlit', 'Google Sheets API', 'Data Viz'],
+                    icon: '📊',
+                    github: 'https://github.com/gowrishankar2705/Energy_Monitoring-System',
+                    demo: '#'
+                },
+                {
+                    title: 'Object Navigationm System',
+                    description: 'Implemented computer vision system using YOLO for real-time object detection and Navigation on Raspberry Pi 4 with feedback direction for the visually impaired.',
+                    tags: ['Computer Vision','YOLO','Raspberry Pi','Python'],
+                    icon: '👁️',
+                    github: 'https://github.com/gowrishankar2705/object-navigation',
+                    demo: '#'
+                },
+                {
+                    title: ' AI Assistant',
+                    description: 'This AI Assistant integrates multiple AI modules such as speech recognition, computer vision, and natural language processing to create an interactive assistant experienc.',
+                    tags: ['NLP', 'AssemblyAI', 'ElevenLabs', 'Voice AI','OpenCV','PyTorch','YOLOv8'],
+                    icon: '🎤',
+                    github: 'https://github.com/gowrishankar2705/ai_assistant',
+                    demo: '#'
+                },
+                {
+                    title: 'Cmponent Detector  for Electronics',
+                    description: 'Component Detector integrates AI-powered object detection models with an intuitive web interface to identify and classify electronic components in images or video streams. This project combines computer vision techniques with modern web development to provide real-time component recognition.',
+                    tags: ['Deep Learning','Python Flask ', 'Transformers', 'Open CV','PyTorch or TensorFlow' ],
+                    icon: '🤖',
+                    github: 'https://github.com/gowrishankar2705/Component-Detector',
+                    demo: '#'
+                },
+                {
+                    title: 'Ecommerce Website',
+                    description: 'SwiftSpotrs is a simple yet elegant ecommerce platform designed to showcase and sell sportswear items online.',
+                    tags: ['HTML', 'CSS', 'Javascript', 'Node JS'],
+                    icon: '🛒',
+                    github: 'https://github.com/gowrishankar2705/swiftspotrs',
+                    demo: '#'
+                },
+                {
+                    title: 'Turf Booking Website',
+                    description: 'A simple and elegant Turf Booking Website built using HTML for front-end design. This project serves as a basic prototype for booking sports turfs online, enabling users to sign up, log in, and book their preferred turf slots.',
+                   tags: ['HTML', 'CSS', 'Javascript', 'Node JS'],
+                    icon: '🏏',
+                    github: 'https://github.com/gowrishankar2705/turfbooking',
+                    demo: '#'
+                }
+            ];
+
+            return (
+                <section id="projects">
+                    <motion.h2 
+                        className="section-title"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        Featured Projects
+                    </motion.h2>
+                    <div className="projects-grid">
+                        {projects.map((project, index) => (
+                            <motion.div
+                                key={index}
+                                className="project-card"
+                                initial={{ opacity: 0, y: 50 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: index * 0.1 }}
+                                whileHover={{ 
+                                    y: -10,
+                                    transition: { duration: 0.3 }
+                                }}
+                            >
+                                <div className="project-image">
+                                    <motion.div
+                                        initial={{ scale: 1 }}
+                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        {project.icon}
+                                    </motion.div>
+                                </div>
+                                <div className="project-content">
+                                    <h3 className="project-title">{project.title}</h3>
+                                    <p className="project-description">{project.description}</p>
+                                    <div className="project-tags">
+                                        {project.tags.map((tag, i) => (
+                                            <span key={i} className="tag">{tag}</span>
+                                        ))}
+                                    </div>
+                                    <div className="project-links">
+                                        <motion.a
+                                            href={project.github}
+                                            className="project-link"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                        >
+                                            <span>GitHub</span>
+                                        </motion.a>
+                                        <motion.a
+                                            href={project.demo}
+                                            className="project-link"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                        >
+                                            <span>Demo</span>
+                                        </motion.a>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </section>
+            );
+        };
+
+        // Contact Section Component
+        const Contact = () => {
+            const [formData, setFormData] = useState({
+                name: '',
+                email: '',
+                message: ''
+            });
+            const [status, setStatus] = useState({ type: '', message: '' });
+            const [isSubmitting, setIsSubmitting] = useState(false);
+
+            const handleChange = (e) => {
+                setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.value
+                });
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setIsSubmitting(true);
+                setStatus({ type: '', message: '' });
+
+                try {
+                    const response = await fetch('http://localhost:3001/api/contact', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setStatus({ 
+                            type: 'success', 
+                            message: 'Message sent successfully! I\'ll get back to you soon.' 
+                        });
+                        setFormData({ name: '', email: '', message: '' });
+                    } else {
+                        setStatus({ 
+                            type: 'error', 
+                            message: data.error || 'Failed to send message. Please try again.' 
+                        });
+                    }
+                } catch (error) {
+                    setStatus({ 
+                        type: 'error', 
+                        message: 'Network error. Please check if the backend server is running on port 3001.' 
+                    });
+                }
+
+                setIsSubmitting(false);
+            };
+
+            return (
+                <section id="contact">
+                    <motion.h2 
+                        className="section-title"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        Get In Touch
+                    </motion.h2>
+                    <div className="contact-content">
+                        <motion.div
+                            className="contact-form"
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <form onSubmit={handleSubmit}>
+                                <motion.div 
+                                    className="form-group"
+                                    initial={{ opacity: 0, x: -50 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.6, delay: 0.2 }}
+                                >
+                                    <label htmlFor="name">Name</label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Your name"
+                                    />
+                                </motion.div>
+                                <motion.div 
+                                    className="form-group"
+                                    initial={{ opacity: 0, x: -50 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.6, delay: 0.3 }}
+                                >
+                                    <label htmlFor="email">Email</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="your.email@example.com"
+                                    />
+                                </motion.div>
+                                <motion.div 
+                                    className="form-group"
+                                    initial={{ opacity: 0, x: -50 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.6, delay: 0.4 }}
+                                >
+                                    <label htmlFor="message">Message</label>
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Tell me about your project or just say hi!"
+                                    ></textarea>
+                                </motion.div>
+                                <motion.button
+                                    type="submit"
+                                    className="submit-btn"
+                                    disabled={isSubmitting}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    {isSubmitting ? <span className="loading"></span> : 'Send Message'}
+                                </motion.button>
+                            </form>
+                            {status.message && (
+                                <motion.div
+                                    className={`form-message ${status.type}`}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                >
+                                    {status.message}
+                                </motion.div>
+                            )}
+                        </motion.div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Footer Component
+        const Footer = () => {
+            return (
+                <footer>
+                    <motion.div
+                        className="social-links"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <motion.a 
+                            href="https://github.com/gowrishankar2705" 
+                            className="social-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.2, rotate: 5 }}
+                            whileTap={{ scale: 0.9 }}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </motion.a>
+                        <motion.a 
+                            href="https://www.linkedin.com/in/gowrishankar-s-59a782253" 
+                            className="social-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.2, rotate: 5 }}
+                            whileTap={{ scale: 0.9 }}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                            </svg>
+                        </motion.a>
+                        <motion.a 
+                            href="mailto:your.email@example.com" 
+                            className="social-link"
+                            whileHover={{ scale: 1.2, rotate: 5 }}
+                            whileTap={{ scale: 0.9 }}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/>
+                            </svg>
+                        </motion.a>
+                    </motion.div>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        © 2025 Gowrishankar. Built with React & Framer Motion.
+                    </motion.p>
+                </footer>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            return (
+                <>
+                    <Navigation />
+                    <Hero />
+                    <About />
+                    <Projects />
+                    <Contact />
+                    <Footer />
+                </>
+            );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
