@@ -1,19 +1,19 @@
 const express = require('express');
 const cors = require('cors');
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ FIX: Trust proxy - CRITICAL for Render deployment
+// Trust proxy for Render
 app.set('trust proxy', 1);
 
-// Rate limiting to prevent spam
+// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -28,11 +28,12 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files (your HTML, CSS, JS)
 app.use(express.static('.'));
 
-// Health check endpoint (important for Render)
+// Configure SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'OK',
@@ -46,28 +47,19 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// Email transporter configuration
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
+// Verify SendGrid configuration on startup
+const verifySendGrid = async () => {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.error('❌ SENDGRID_API_KEY not configured');
+    return false;
   }
-});
+  console.log('✅ SendGrid API key configured');
+  return true;
+};
 
-// Verify email configuration on startup
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('Email configuration error:', error);
-  } else {
-    console.log('✅ Email server is ready to send messages');
-  }
-});
+verifySendGrid();
 
-// Email sending endpoint with rate limiting
+// Email sending endpoint
 app.post('/api/send-email', limiter, async (req, res) => {
   const { name, email, message, subject } = req.body;
 
@@ -79,7 +71,7 @@ app.post('/api/send-email', limiter, async (req, res) => {
     });
   }
 
-  // Basic email validation
+  // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ 
@@ -88,10 +80,10 @@ app.post('/api/send-email', limiter, async (req, res) => {
     });
   }
 
-  // Mail options
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER, // Send to yourself
+  // SendGrid email configuration
+  const msg = {
+    to: process.env.RECIPIENT_EMAIL || process.env.EMAIL_USER,
+    from: process.env.SENDER_EMAIL || process.env.EMAIL_USER, // Must be verified in SendGrid
     subject: subject || `Portfolio Contact from ${name}`,
     html: `
       <!DOCTYPE html>
@@ -135,13 +127,11 @@ app.post('/api/send-email', limiter, async (req, res) => {
       </body>
       </html>
     `,
-    replyTo: email // Allows you to reply directly to the sender
+    replyTo: email
   };
 
   try {
-    // Send email
-    await transporter.sendMail(mailOptions);
-    
+    await sgMail.send(msg);
     console.log(`✅ Email sent successfully from ${email}`);
     
     res.status(200).json({ 
@@ -149,22 +139,23 @@ app.post('/api/send-email', limiter, async (req, res) => {
       message: 'Email sent successfully! Thank you for reaching out.' 
     });
   } catch (error) {
-    console.error('❌ Email sending error:', error);
+    console.error('❌ SendGrid error:', error.response?.body || error);
     
     res.status(500).json({ 
       success: false, 
-      error: 'Failed to send email. Please try again later or contact directly.',
+      error: 'Failed to send email. Please try again later.',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// Test endpoint (optional - remove in production)
+// Test endpoint
 app.get('/api/test', (req, res) => {
   res.json({
     message: 'Backend is working!',
     environment: process.env.NODE_ENV || 'development',
-    emailConfigured: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS)
+    emailService: 'SendGrid',
+    sendgridConfigured: !!process.env.SENDGRID_API_KEY
   });
 });
 
@@ -190,10 +181,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server - Store the server instance for graceful shutdown
+// Start server
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📧 Email service: ${process.env.EMAIL_USER ? 'Configured' : 'Not configured'}`);
+  console.log(`📧 Email service: SendGrid`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔒 Trust proxy: ${app.get('trust proxy')}`);
 });
