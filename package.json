@@ -20,7 +20,8 @@
     "nodemailer": "^6.9.7",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express-rate-limit": "^7.1.5"
+    "express-rate-limit": "^7.1.5",
+    "@sendgrid/mail": "^8.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
