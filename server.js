@@ -5,7 +5,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 
 // Middleware
 app.use(cors());
@@ -177,3 +177,23 @@ app.get('/', (req, res) => {
 
 app.listen(process.env.PORT || 3000, '0.0.0.0');
 
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, closing server...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, closing server...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
