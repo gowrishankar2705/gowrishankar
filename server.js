@@ -1,207 +1,166 @@
 const express = require('express');
+const nodemailer = require('nodemailer');
 const cors = require('cors');
-const sgMail = require('@sendgrid/mail');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Trust proxy for Render
-app.set('trust proxy', 1);
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  credentials: true,
-  methods: ['GET', 'POST']
-}));
-
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('.'));
 
-// Configure SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-// Health check
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
+// Rate limiting to prevent spam
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.'
 });
 
-// Root route
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+app.use('/api/contact', limiter);
+
+// Create nodemailer transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // You can use other services like 'outlook', 'yahoo', etc.
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS // Use App Password for Gmail
+    }
 });
 
-// Verify SendGrid configuration on startup
-const verifySendGrid = async () => {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.error('❌ SENDGRID_API_KEY not configured');
-    return false;
-  }
-  console.log('✅ SendGrid API key configured');
-  return true;
-};
+// Verify transporter configuration
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('Email transporter error:', error);
+    } else {
+        console.log('Email server is ready to send messages');
+    }
+});
 
-verifySendGrid();
+// Contact form endpoint
+app.post('/api/contact', async (req, res) => {
+    const { name, email, message } = req.body;
 
-// Email sending endpoint
-app.post('/api/send-email', limiter, async (req, res) => {
-  const { name, email, message, subject } = req.body;
+    // Validation
+    if (!name || !email || !message) {
+        return res.status(400).json({ 
+            error: 'Please provide all required fields: name, email, and message' 
+        });
+    }
 
-  // Input validation
-  if (!name || !email || !message) {
-    return res.status(400).json({ 
-      success: false, 
-      error: 'Please provide name, email, and message' 
-    });
-  }
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ 
+            error: 'Please provide a valid email address' 
+        });
+    }
 
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ 
-      success: false, 
-      error: 'Please provide a valid email address' 
-    });
-  }
-
-  // SendGrid email configuration
-  const msg = {
-    to: process.env.RECIPIENT_EMAIL || process.env.EMAIL_USER,
-    from: process.env.SENDER_EMAIL || process.env.EMAIL_USER, // Must be verified in SendGrid
-    subject: subject || `Portfolio Contact from ${name}`,
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                   color: white; padding: 20px; border-radius: 5px 5px 0 0; }
-          .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; }
-          .field { margin-bottom: 15px; }
-          .label { font-weight: bold; color: #667eea; }
-          .value { margin-top: 5px; padding: 10px; background: white; border-radius: 3px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h2>📧 New Portfolio Contact Message</h2>
-          </div>
-          <div class="content">
-            <div class="field">
-              <div class="label">👤 Name:</div>
-              <div class="value">${name}</div>
+    // Email options - Email sent to you
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.RECIPIENT_EMAIL, // Your email where you want to receive messages
+        subject: `Portfolio Contact: Message from ${name}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <h2 style="color: #00ffff; border-bottom: 3px solid #00ffff; padding-bottom: 10px;">New Portfolio Contact Message</h2>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <p style="margin: 10px 0;"><strong style="color: #333;">From:</strong> ${name}</p>
+                    <p style="margin: 10px 0;"><strong style="color: #333;">Email:</strong> <a href="mailto:${email}" style="color: #00ffff;">${email}</a></p>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background-color: #f0f0f0; border-left: 4px solid #00ffff; border-radius: 4px;">
+                        <p style="margin: 0; color: #333; line-height: 1.6;"><strong>Message:</strong></p>
+                        <p style="margin: 10px 0; color: #555; line-height: 1.6;">${message}</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #e8f9ff; border-radius: 8px;">
+                    <p style="margin: 0; color: #666; font-size: 14px;">
+                        <strong>Quick Reply:</strong> Simply reply to this email to respond directly to ${name}.
+                    </p>
+                </div>
+                
+                <p style="margin-top: 20px; color: #999; font-size: 12px; text-align: center;">
+                    This message was sent from your portfolio website contact form.
+                </p>
             </div>
-            <div class="field">
-              <div class="label">📧 Email:</div>
-              <div class="value">${email}</div>
-            </div>
-            <div class="field">
-              <div class="label">💬 Message:</div>
-              <div class="value">${message.replace(/\n/g, '<br>')}</div>
-            </div>
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
-              <p>Sent from your portfolio website</p>
-              <p>Time: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
-            </div>
-          </div>
-        </div>
-      </body>
-      </html>
-    `,
-    replyTo: email
-  };
+        `,
+        replyTo: email // This allows you to reply directly to the sender
+    };
 
-  try {
-    await sgMail.send(msg);
-    console.log(`✅ Email sent successfully from ${email}`);
-    
-    res.status(200).json({ 
-      success: true, 
-      message: 'Email sent successfully! Thank you for reaching out.' 
-    });
-  } catch (error) {
-    console.error('❌ SendGrid error:', error.response?.body || error);
-    
-    res.status(500).json({ 
-      success: false, 
-      error: 'Failed to send email. Please try again later.',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
+    // Auto-reply to sender (optional but professional)
+    const autoReplyOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Thank you for contacting me!',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0a0a0a; color: #ffffff; border-radius: 10px;">
+                <h2 style="color: #00ffff; border-bottom: 3px solid #00ffff; padding-bottom: 10px;">Thank You for Reaching Out!</h2>
+                
+                <div style="background-color: #111111; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid rgba(0, 255, 255, 0.2);">
+                    <p style="margin: 10px 0; line-height: 1.8;">Hi <strong style="color: #00ffff;">${name}</strong>,</p>
+                    
+                    <p style="margin: 15px 0; line-height: 1.8;">
+                        Thank you for your message! I've received your inquiry and will get back to you as soon as possible.
+                    </p>
+                    
+                    <p style="margin: 15px 0; line-height: 1.8;">
+                        In the meantime, feel free to check out my latest projects on 
+                        <a href="https://github.com/yourusername" style="color: #00ffff; text-decoration: none;">GitHub</a> 
+                        or connect with me on 
+                        <a href="https://linkedin.com/in/yourprofile" style="color: #00ffff; text-decoration: none;">LinkedIn</a>.
+                    </p>
+                    
+                    <div style="margin-top: 25px; padding: 15px; background-color: rgba(0, 255, 255, 0.05); border-left: 4px solid #00ffff; border-radius: 4px;">
+                        <p style="margin: 0; color: #888; font-size: 14px;"><strong>Your Message:</strong></p>
+                        <p style="margin: 10px 0; color: #ccc; line-height: 1.6;">${message}</p>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 20px; color: #888; font-size: 14px;">
+                    Best regards,<br/>
+                    <strong style="color: #00ffff;">Gowrishankar</strong><br/>
+                    AI & Data Science Engineer
+                </p>
+                
+                <p style="margin-top: 30px; color: #666; font-size: 12px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px;">
+                    This is an automated response to confirm receipt of your message.
+                </p>
+            </div>
+        `
+    };
+
+    try {
+        // Send email to you
+        await transporter.sendMail(mailOptions);
+        
+        // Send auto-reply to sender
+        await transporter.sendMail(autoReplyOptions);
+        
+        console.log(`Message received from ${name} (${email})`);
+        
+        res.status(200).json({ 
+            success: true, 
+            message: 'Message sent successfully!' 
+        });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ 
+            error: 'Failed to send message. Please try again later.',
+            details: error.message 
+        });
+    }
 });
 
-// Test endpoint
-app.get('/api/test', (req, res) => {
-  res.json({
-    message: 'Backend is working!',
-    environment: process.env.NODE_ENV || 'development',
-    emailService: 'SendGrid',
-    sendgridConfigured: !!process.env.SENDGRID_API_KEY
-  });
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ 
-    error: 'Route not found',
-    availableRoutes: [
-      'GET /',
-      'GET /health',
-      'GET /api/test',
-      'POST /api/send-email'
-    ]
-  });
-});
-
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).json({ 
-    success: false,
-    error: 'Internal server error' 
-  });
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'Server is running', timestamp: new Date() });
 });
 
 // Start server
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📧 Email service: SendGrid`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔒 Trust proxy: ${app.get('trust proxy')}`);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
-  server.close(() => {
-    console.log('HTTP server closed');
-    process.exit(0);
-  });
-});
-
-process.on('SIGINT', () => {
-  console.log('SIGINT signal received: closing HTTP server');
-  server.close(() => {
-    console.log('HTTP server closed');
-    process.exit(0);
-  });
+app.listen(PORT, () => {
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`📧 Email service: ${process.env.EMAIL_USER ? 'Configured' : 'NOT configured - check .env file'}`);
 });
