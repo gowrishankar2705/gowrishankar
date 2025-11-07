@@ -74,11 +74,6 @@ gowrishankar/
 
 ---
 
-## 🌐 Live Demo
-
-Visit my portfolio at: [Your deployed URL here]
-
----
 
 ## 📫 Connect With Me
 
