@@ -1,1011 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=1280">
-  <title>Gowrishankar S — AI & ML Developer</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <style>
-        :root {
-      --bg-dark: #0f172a;
-      --surface: #1e293b;
-      --card: #1e293b;
-      --border: rgba(255, 255, 255, 0.1);
-      --primary: #3b82f6;
-      --glow: rgba(59, 130, 246, 0.4);
-      --cyan: #06b6d4;
-      --gold: #f59e0b;
-      --white: #f8fafc;
-      --muted: #94a3b8;
-      --text: #e2e8f0;
-      --font-disp: 'Inter', sans-serif;
-      --font-head: 'Inter', sans-serif;
-      --font-body: 'JetBrains Mono', monospace;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      cursor: crosshair;
-    }
-
-    a,
-    button,
-    .interactive,
-    input,
-    textarea,
-    .story-card,
-    .val-panel,
-    .thumb {
-      cursor: pointer;
-    }
-
-    body {
-      background: var(--bg-dark);
-      color: var(--text);
-      font-family: var(--font-body);
-      overflow-x: hidden;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg-dark);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--primary);
-    }
-
-    .scanlines {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9998;
-      background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 1px, rgba(255, 255, 255, 0.02) 1px, rgba(255, 255, 255, 0.02) 2px);
-    }
-
-    #bg-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      pointer-events: none;
-    }
-
-    .bg-radial {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 60%);
-      z-index: -1;
-      pointer-events: none;
-    }
-
-
-
-    .cursor-ring {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--primary);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.2s, height 0.2s, background 0.2s;
-    }
-
-    .click-pulse {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--cyan);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 10000;
-      animation: clickExpand 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes clickExpand {
-      0% {
-        width: 20px;
-        height: 20px;
-        opacity: 1;
-        border-width: 2px;
-      }
-
-      100% {
-        width: 80px;
-        height: 80px;
-        opacity: 0;
-        border-width: 0px;
-        box-shadow: 0 0 20px var(--primary);
-      }
-    }
-
-    .cursor-ring.active {
-      width: 60px;
-      height: 60px;
-      background: rgba(59, 130, 246, 0.15);
-      border-color: var(--cyan);
-      box-shadow: 0 0 15px var(--primary);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-
-
-    .glitch-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .glitch-bar {
-      flex: 1;
-      background: var(--bg-dark);
-      transform: scaleX(0);
-      transform-origin: left;
-    }
-
-    .glitch-overlay.active .glitch-bar:nth-child(1) {
-      animation: glitchSweep 0.5s ease-in-out forwards;
-      background: var(--primary);
-    }
-
-    .glitch-overlay.active .glitch-bar:nth-child(2) {
-      animation: glitchSweep 0.5s ease-in-out 0.1s forwards;
-      background: var(--cyan);
-    }
-
-    .glitch-overlay.active .glitch-bar:nth-child(3) {
-      animation: glitchSweep 0.5s ease-in-out 0.2s forwards;
-      background: var(--gold);
-    }
-
-    @keyframes glitchSweep {
-      0% {
-        transform: scaleX(0) skewX(-15deg);
-        transform-origin: left;
-        filter: blur(10px);
-      }
-
-      40% {
-        transform: scaleX(1.05) skewX(0deg);
-        transform-origin: left;
-        filter: blur(0px);
-      }
-
-      50% {
-        transform: scaleX(1) skewX(0deg);
-        transform-origin: left;
-      }
-
-      51% {
-        transform: scaleX(1) skewX(0deg);
-        transform-origin: right;
-      }
-
-      100% {
-        transform: scaleX(0) skewX(15deg);
-        transform-origin: right;
-        filter: blur(10px);
-      }
-    }
-
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 60px;
-      background: #060d18cc;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-right: 1px solid rgba(59, 130, 246, 0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 0;
-      z-index: 9000;
-    }
-
-    .nav-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      text-decoration: none;
-      margin-bottom: 12px;
-      transition: all 0.3s;
-      position: relative;
-    }
-
-    .nav-btn:hover {
-      color: var(--primary);
-      box-shadow: 0 0 20px var(--glow);
-      background: rgba(59, 130, 246, 0.1);
-    }
-
-    .nav-btn.active {
-      color: var(--primary);
-    }
-
-    .nav-btn.active::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border: 1px solid var(--primary);
-      border-radius: 50%;
-      animation: pulseRing 2s infinite;
-    }
-
-    @keyframes pulseRing {
-      0% {
-        transform: scale(0.8);
-        opacity: 1;
-      }
-
-      100% {
-        transform: scale(1.5);
-        opacity: 0;
-      }
-    }
-
-    .side-logo {
-      margin-top: auto;
-      font-family: var(--font-disp);
-      color: var(--gold);
-      font-size: 14px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .main-content {
-      margin-left: 60px;
-      min-height: 100vh;
-      position: relative;
-      animation: slideInPage 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes slideInPage {
-      from {
-        opacity: 0;
-        transform: translateX(50px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    /* HOME SPECIFIC STYLES */
-    .hero-page {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-      padding: 30px 4vw;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0;
-      padding-bottom: 2vh;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-    }
-
-    .tb-logo {
-      font-family: var(--font-disp);
-      color: var(--gold);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-    }
-
-    .tb-status {
-      font-family: var(--font-body);
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: #06b6d4;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #06b6d4;
-      animation: pulseGrn 2s infinite;
-    }
-
-    @keyframes pulseGrn {
-      50% {
-        opacity: 0.4;
-      }
-    }
-
-    .hero-split {
-      display: flex;
-      flex: 1;
-      min-height: 0;
-      align-items: center;
-    }
-
-    .col-left {
-      flex: 0 0 25%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 30px;
-      position: relative;
-      height: 100%;
-    }
-
-    .vert-text {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%) rotate(-90deg);
-      transform-origin: left center;
-      font-family: var(--font-head);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .clk-box {
-      padding-left: 40px;
-    }
-
-    .clock {
-      font-family: var(--font-body);
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-
-    .coords {
-      font-family: var(--font-body);
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 40px;
-    }
-
-    .sys-status {
-      font-family: var(--font-body);
-      font-size: 12px;
-      color: var(--primary);
-      line-height: 1.8;
-      min-height: 100px;
-    }
-
-    .col-center {
-      flex: 0 0 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
-    }
-
-    .center-glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 60%);
-      transform: translate(-50%, -50%);
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    #neural-circle {
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      background: radial-gradient(circle at center, #1e293b 0%, #1e293b 100%);
-      box-shadow: 0 0 40px rgba(59, 130, 246, 0.1);
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .name-badge {
-      font-family: var(--font-disp);
-      font-size: 14px;
-      letter-spacing: 0.25em;
-      color: var(--white);
-      margin-bottom: 12px;
-    }
-
-    .hero-h1 {
-      font-family: var(--font-disp);
-      font-size: 52px;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      letter-spacing: 0.05em;
-    }
-
-    .h-line1 {
-      color: var(--white);
-    }
-
-    .h-line2 {
-      color: transparent;
-      -webkit-text-stroke: 1.5px var(--primary);
-    }
-
-    .hero-sub {
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: var(--muted);
-      max-width: 440px;
-      line-height: 1.6;
-      margin-bottom: 30px;
-    }
-
-    .hero-btns {
-      display: flex;
-      gap: 15px;
-    }
-
-    .btn-primary,
-    .btn-gold {
-      font-family: var(--font-disp);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 12px 24px;
-      text-decoration: none;
-      border-radius: 2px;
-      transition: all 0.3s;
-      letter-spacing: 0.1em;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-primary {
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      background: rgba(59, 130, 246, 0.05);
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-    }
-
-    .btn-primary:hover {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-    }
-
-    .btn-gold {
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      background: rgba(255, 193, 7, 0.05);
-    }
-
-    .btn-gold:hover {
-      background: var(--gold);
-      color: #000;
-      box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
-      text-shadow: none;
-    }
-
-    .col-right {
-      flex: 0 0 25%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 40px;
-      position: relative;
-      height: 100%;
-    }
-
-    .stats-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      align-items: flex-end;
-      width: 100%;
-      padding-right: 0;
-    }
-
-    .stat-item {
-      text-align: right;
-      position: relative;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 15px;
-      width: 100%;
-      max-width: 150px;
-    }
-
-    .stat-item:last-child {
-      border-bottom: none;
-    }
-
-    .s-num {
-      font-family: var(--font-disp);
-      font-size: 48px;
-      color: var(--white);
-      line-height: 1;
-      display: inline-block;
-    }
-
-    .plus {
-      font-family: var(--font-disp);
-      font-size: 24px;
-      color: var(--primary);
-      vertical-align: top;
-      margin-left: -5px;
-    }
-
-    .s-lbl {
-      font-family: var(--font-head);
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      margin-top: 5px;
-    }
-
-    .marquee-wrap {
-      position: absolute;
-      right: 2vw;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 60vh;
-      width: 20px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-    }
-
-    .marquee {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-    }
-
-    .marquee-in {
-      display: inline-block;
-      white-space: nowrap;
-      font-family: var(--font-body);
-      font-size: 11px;
-      color: var(--primary);
-      animation: scrollX 20s linear infinite;
-      letter-spacing: 0.2em;
-      opacity: 0.7;
-    }
-
-    @keyframes scrollX {
-      from {
-        transform: translateY(0);
-      }
-
-      to {
-        transform: translateY(50%);
-      }
-    }
-
-    @media (max-width: 900px) {
-      .sidebar {
-        top: auto;
-        bottom: 0;
-        width: 100%;
-        height: 60px;
-        border-right: none;
-        border-top: 1px solid rgba(59, 130, 246, 0.2);
-        flex-direction: row;
-        justify-content: space-around;
-        padding: 0;
-      }
-
-      .nav-btn {
-        margin-bottom: 0;
-      }
-
-      .side-logo {
-        display: none;
-      }
-
-      .main-content {
-        margin-left: 0;
-        margin-bottom: 60px;
-      }
-
-      .cursor-dot,
-      .cursor-ring {
-        width: 36px;
-        height: 36px;
-        border: 1px solid var(--primary);
-        border-radius: 50%;
-        position: fixed;
-        pointer-events: none;
-        z-index: 9999;
-        transform: translate(-50%, -50%);
-        transition: width 0.2s, height 0.2s, background 0.2s;
-      }
-
-      .click-pulse {
-        position: fixed;
-        width: 20px;
-        height: 20px;
-        border: 2px solid var(--cyan);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        z-index: 10000;
-        animation: clickExpand 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-
-      @keyframes clickExpand {
-        0% {
-          width: 20px;
-          height: 20px;
-          opacity: 1;
-          border-width: 2px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gowrishankar S | AI & ML Engineer</title>
+    <meta name="description" content="Portfolio of Gowrishankar S, AI & Machine Learning Engineer specializing in Computer Vision, Deep Learning, and Edge AI. based in Coimbatore, Tamil Nadu.">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
-        100% {
-          width: 80px;
-          height: 80px;
-          opacity: 0;
-          border-width: 0px;
-          box-shadow: 0 0 20px var(--primary);
-        }
-      }
-
-      * {
-        cursor: auto !important;
-      }
-
-      .hero-page {
-        display: block;
-        overflow: auto;
-        padding: 20px;
-        height: auto;
-        min-height: 100vh;
-      }
-
-      .hero-split {
-        flex-direction: column;
-        gap: 40px;
-        padding-bottom: 80px;
-      }
-
-      .col-left,
-      .col-center,
-      .col-right {
-        flex: auto;
-        width: 100%;
-        align-items: center;
-        text-align: center;
-      }
-
-      .vert-text {
-        position: static;
-        transform: none;
-        margin-bottom: 20px;
-      }
-
-      .clk-box {
-        padding-left: 0;
-      }
-
-      .stats-stack {
-        align-items: center;
-      }
-
-      .marquee-wrap {
-        position: relative;
-        right: auto;
-        top: auto;
-        transform: none;
-        height: auto;
-        width: 100%;
-        margin-top: 40px;
-      }
-
-      .marquee {
-        writing-mode: horizontal-tb;
-        transform: none;
-        overflow: hidden;
-        width: 100%;
-        white-space: nowrap;
-      }
-
-      @keyframes scrollX {
-        from {
-          transform: translateX(0);
+        .title-container {
+            margin-bottom: 2rem;
         }
 
-        to {
-          transform: translateX(-50%);
+        .hero-title {
+            margin-bottom: 0.5rem;
         }
-      }
 
-      .hero-h1 {
-        font-size: 40px;
-      }
+        .typewriter-container {
+            font-size: 1.5rem;
+            color: var(--accent-blue);
+            font-family: var(--font-display);
+            height: 40px;
+            font-weight: 600;
+        }
 
-      #neural-circle {
-        width: 240px;
-        height: 240px;
-      }
-    }
-  </style>
+        .hero-tagline {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-size: 1.25rem;
+            color: var(--text-body);
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .floating-badge {
+            position: absolute;
+            top: 100px;
+            right: 5%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .location-tag {
+            position: absolute;
+            bottom: 40px;
+            left: 5%;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-display);
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.7;
+        }
+
+        .scroll-down svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-heading);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-10px) translateX(-50%); }
+            60% { transform: translateY(-5px) translateX(-50%); }
+        }
+
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background-color: var(--accent-blue);
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
 </head>
-
 <body>
-
-  <div class="glitch-overlay">
-    <div class="glitch-bar"></div>
-    <div class="glitch-bar"></div>
-    <div class="glitch-bar"></div>
-  </div>
-  <canvas id="bg-canvas"></canvas>
-  <div class="bg-radial"></div>
-  <div class="scanlines"></div>
-
-  <div class="cursor-ring"></div>
-
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <a href="index.html" class="nav-btn active interactive" title="Home"><i class="fa-solid fa-house"></i></a>
-    <a href="about.html" class="nav-btn interactive" title="About"><i class="fa-solid fa-user"></i></a>
-    <a href="skills.html" class="nav-btn interactive" title="Skills"><i class="fa-solid fa-bolt"></i></a>
-    <a href="projects.html" class="nav-btn interactive" title="Projects"><i class="fa-solid fa-folder-open"></i></a>
-    <a href="experience.html" class="nav-btn interactive" title="Experience"><i class="fa-solid fa-briefcase"></i></a>
-    <a href="contact.html" class="nav-btn interactive" title="Contact"><i class="fa-solid fa-envelope"></i></a>
-    <a href="#" class="side-logo interactive">GS</a>
-  </nav>
-
-  <main class="main-content hero-page">
-    <header class="top-bar">
-      <div class="tb-logo">GS</div>
-      <div class="tb-status"><span class="status-dot"></span> Available for hire</div>
-    </header>
-
-    <div class="hero-split">
-      <div class="col-left">
-        <div class="vert-text">AI · ML · ANDROID </div>
-        <div class="clk-box">
-          <div class="clock" id="live-clock">00:00:00</div>
-          <div class="coords">11.0168° N, 76.9558° E</div>
-          <div class="sys-status" id="sys-status"></div>
-        </div>
-      </div>
-
-      <div class="col-center">
-        <div class="center-glow"></div>
-        <canvas id="neural-circle" width="320" height="320"></canvas>
-        <div class="name-badge">GOWRISHANKAR S</div>
-        <h1 class="hero-h1">
-          <div class="h-line1">AI & ML</div>
-          <div class="h-line2">DEVELOPER</div>
-        </h1>
-        <p class="hero-sub">Building machines that think, systems that adapt, and code that learns.</p>
-        <div class="hero-btns">
-          <a href="projects.html" class="btn-primary interactive">[ ENTER PORTFOLIO → ]</a>
-          <a href="Gowrishankar.pdf" class="btn-gold interactive" download>[ DOWNLOAD CV ]</a>
-        </div>
-      </div>
-
-      <div class="col-right">
-        <div class="stats-stack">
-          <div class="stat-item">
-            <div class="s-num" data-v="9">00</div>
-            <div class="s-lbl">Projects</div>
-          </div>
-          <div class="stat-item">
-            <div class="s-num" data-v="15">00</div>
-            <div class="s-lbl">Certs</div>
-          </div>
-          <div class="stat-item">
-            <div class="s-num" data-v="1">00</div><span class="plus">+</span>
-            <div class="s-lbl">Years Exp</div>
-          </div>
-        </div>
-        <div class="marquee-wrap">
-          <div class="marquee">
-            <div class="marquee-in">PYTHON · TENSORFLOW · KERAS · SCIKIT-LEARN · ANDROID · ESP32 · FIREBASE · UNITY ·
-              FLUTTER · PYTHON · TENSORFLOW · KERAS · SCIKIT-LEARN · ANDROID · ESP32 · FIREBASE · UNITY · FLUTTER ·
-            </div>
-          </div>
-        </div>
-      </div>
+    <div id="loader" class="loader-overlay">
+        <div class="loader-text">GOWRISHANKAR S</div>
     </div>
-  </main>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    <nav class="navbar">
+        <a href="index.html" class="logo">GS<span style="color:var(--accent-blue)">.</span></a>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="about.html">About</a>
+            <a href="skills.html">Skills</a>
+            <a href="projects.html">Projects</a>
+            <a href="experience.html">Experience</a>
+            <a href="contact.html">Contact</a>
+            <div class="nav-underline"></div>
+        </div>
+        <button class="hamburger">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
 
-      // Cursor & Click Pulse
-      const ring = document.querySelector('.cursor-ring');
-      if (window.matchMedia("(pointer: fine)").matches && ring) {
-        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-        let ringX = mouseX, ringY = mouseY;
-        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-        function loop() {
-          ringX += (mouseX - ringX) * 0.15; ringY += (mouseY - ringY) * 0.15;
-          ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
-          requestAnimationFrame(loop);
-        }
-        requestAnimationFrame(loop);
-        document.querySelectorAll('a, button, input, textarea, .interactive, .thumb, .story-card, .val-panel').forEach(el => {
-          el.addEventListener('mouseenter', () => ring.classList.add('active'));
-          el.addEventListener('mouseleave', () => ring.classList.remove('active'));
-        });
+    <div class="mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="skills.html">Skills</a>
+        <a href="projects.html">Projects</a>
+        <a href="experience.html">Experience</a>
+        <a href="contact.html">Contact</a>
+    </div>
 
-        window.addEventListener('click', e => {
-          const p = document.createElement('div');
-          p.classList.add('click-pulse');
-          p.style.left = e.clientX + 'px';
-          p.style.top = e.clientY + 'px';
-          document.body.appendChild(p);
-          setTimeout(() => p.remove(), 600);
-        });
-      }
+    <main>
+        <section class="hero reveal">
+            <div class="badge floating-badge">
+                <div class="dot"></div>
+                ⚡ Open to Opportunities
+            </div>
+            
+            <div class="title-container relative z-10">
+                <h1 class="hero-title reveal-text">GOWRISHANKAR S</h1>
+                <div class="typewriter-container">
+                    <span id="typewriter-text"></span><span class="cursor"></span>
+                </div>
+            </div>
 
+            <p class="hero-tagline reveal" style="transition-delay: 0.4s;">
+                Building intelligent systems that see, learn, and act — from edge devices to the cloud.
+            </p>
 
-      // Glitch Nav
-      document.querySelectorAll('a').forEach(link => {
-        if (link.hostname === window.location.hostname && link.target !== '_blank' && !link.hasAttribute('download') && link.getAttribute('href') !== '#') {
-          link.addEventListener('click', e => {
-            e.preventDefault();
-            const href = link.href;
-            document.querySelector('.glitch-overlay').classList.add('active');
-            setTimeout(() => window.location.href = href, 400);
-          });
-        }
-      });
+            <div class="cta-container reveal" style="transition-delay: 0.6s;">
+                <a href="projects.html" class="btn btn-primary">View My Work</a>
+                <a href="Gowrishankar.pdf" target="_blank" class="btn btn-ghost">Download Resume</a>
+            </div>
 
-      // Background Canvas
-      const bgCanvas = document.getElementById('bg-canvas');
-      if (bgCanvas) {
-        const bgCtx = bgCanvas.getContext('2d');
-        let bgW = bgCanvas.width = window.innerWidth;
-        let bgH = bgCanvas.height = window.innerHeight;
-        window.addEventListener('resize', () => { bgW = bgCanvas.width = window.innerWidth; bgH = bgCanvas.height = window.innerHeight; });
-        const bgParticles = [];
-        for (let i = 0; i < 80; i++) bgParticles.push({ x: Math.random() * bgW, y: Math.random() * bgH, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5 });
-        function drawBg() {
-          bgCtx.clearRect(0, 0, bgW, bgH);
-          bgCtx.fillStyle = 'rgba(59, 130, 246, 0.6)';
-          bgParticles.forEach(p => {
-            p.x += p.vx; p.y += p.vy;
-            if (p.x < 0 || p.x > bgW) p.vx *= -1; if (p.y < 0 || p.y > bgH) p.vy *= -1;
-            bgCtx.beginPath(); bgCtx.arc(p.x, p.y, 1.5, 0, Math.PI * 2); bgCtx.fill();
-          });
-          bgCtx.strokeStyle = 'rgba(6, 182, 212, 0.15)';
-          for (let i = 0; i < bgParticles.length; i++) {
-            for (let j = i + 1; j < bgParticles.length; j++) {
-              let dx = bgParticles[i].x - bgParticles[j].x, dy = bgParticles[i].y - bgParticles[j].y;
-              if (dx * dx + dy * dy < 15000) {
-                bgCtx.beginPath(); bgCtx.moveTo(bgParticles[i].x, bgParticles[i].y); bgCtx.lineTo(bgParticles[j].x, bgParticles[j].y); bgCtx.stroke();
-              }
+            <div class="location-tag reveal" style="transition-delay: 0.8s;">
+                📍 Coimbatore, Tamil Nadu
+            </div>
+
+            <div class="scroll-down reveal" style="transition-delay: 1s;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+        </section>
+    </main>
+
+    <script src="shared.js"></script>
+    <script>
+        // Typewriter Effect
+        const roles = [
+            "AI & ML Engineer",
+            "Computer Vision Specialist",
+            "Deep Learning Developer",
+            "Edge AI Builder"
+        ];
+        
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let textElement = document.getElementById('typewriter-text');
+
+        function typeWriter() {
+            const currentRole = roles[roleIndex];
+            
+            if (isDeleting) {
+                textElement.textContent = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                textElement.textContent = currentRole.substring(0, charIndex + 1);
+                charIndex++;
             }
-          }
-          requestAnimationFrame(drawBg);
-        }
-        drawBg();
-      }
 
-      // Live Clock
-      setInterval(() => {
-        const clk = document.getElementById('live-clock');
-        if (clk) {
-          const d = new Date();
-          clk.innerText = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0');
-        }
-      }, 1000);
+            let typeSpeed = isDeleting ? 50 : 100;
 
-      // System Typing Effect
-      const sysMsg = ["Hello and welcome! Take a look at my work"];
-      const sysEl = document.getElementById('sys-status');
-      let line = 0, char = 0;
-      if (sysEl) {
-        function typeWord() {
-          if (line < sysMsg.length) {
-            sysEl.innerHTML += sysMsg[line].charAt(char);
-            char++;
-            if (char >= sysMsg[line].length) { sysEl.innerHTML += '<br>'; char = 0; line++; setTimeout(typeWord, 300); }
-            else { setTimeout(typeWord, 50); }
-          }
-        }
-        setTimeout(typeWord, 1200);
-      }
-
-      // Stats Count Up
-      setTimeout(() => {
-        document.querySelectorAll('.s-num').forEach(el => {
-          const v = parseInt(el.getAttribute('data-v'));
-          let c = 0;
-          const t = setInterval(() => {
-            c += v / 20;
-            if (c >= v) { el.innerText = v.toString().padStart(2, '0'); clearInterval(t); }
-            else el.innerText = Math.floor(c).toString().padStart(2, '0');
-          }, 40);
-        });
-      }, 1000);
-
-      // Neural Circle Canvas
-      const nc = document.getElementById('neural-circle');
-      if (nc) {
-        const nctx = nc.getContext('2d');
-        const nodes = [];
-        const cw = nc.width, ch = nc.height, radius = cw / 2 - 20;
-        for (let i = 0; i < 30; i++) {
-          const a = Math.random() * Math.PI * 2;
-          const r = Math.random() * radius;
-          nodes.push({ x: cw / 2 + r * Math.cos(a), y: ch / 2 + r * Math.sin(a), vx: (Math.random() - 0.5) * 1.5, vy: (Math.random() - 0.5) * 1.5 });
-        }
-        function drawNC() {
-          nctx.clearRect(0, 0, cw, ch);
-          nodes.forEach(n => {
-            n.x += n.vx; n.y += n.vy;
-            const dist = Math.sqrt((n.x - cw / 2) * (n.x - cw / 2) + (n.y - ch / 2) * (n.y - ch / 2));
-            if (dist > radius) {
-              n.x = cw / 2 + (n.x - cw / 2) * (radius - 1) / dist; n.y = ch / 2 + (n.y - ch / 2) * (radius - 1) / dist;
-              n.vx *= -1; n.vy *= -1;
+            if (!isDeleting && charIndex === currentRole.length) {
+                typeSpeed = 2000; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+                typeSpeed = 500; // Pause before new word
             }
-            nctx.fillStyle = 'rgba(59, 130, 246, 0.8)'; nctx.beginPath(); nctx.arc(n.x, n.y, 3, 0, Math.PI * 2); nctx.fill();
-            nctx.shadowBlur = 15; nctx.shadowColor = 'rgba(59, 130, 246, 1)';
-          });
-          nctx.shadowBlur = 0;
-          nctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-          nctx.lineWidth = 1;
-          for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-              if (Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y) < 60) {
-                nctx.beginPath(); nctx.moveTo(nodes[i].x, nodes[i].y); nctx.lineTo(nodes[j].x, nodes[j].y); nctx.stroke();
-              }
-            }
-          }
-          requestAnimationFrame(drawNC);
-        }
-        drawNC();
-      }
 
-    });
-  </script>
+            setTimeout(typeWriter, typeSpeed);
+        }
+
+        setTimeout(typeWriter, 2000); // Start after loader
+    </script>
 </body>
-
 </html>
