@@ -55,21 +55,9 @@
         }
 
         /* Category Accents */
-        .cat-ai { 
-            color: var(--accent-blue); 
-            border-bottom: 2px solid var(--accent-blue); 
-            text-shadow: 0 0 15px rgba(0, 212, 255, 0.4); 
-        }
-        .cat-eng { 
-            color: var(--accent-violet); 
-            border-bottom: 2px solid var(--accent-violet); 
-            text-shadow: 0 0 15px rgba(124, 58, 237, 0.4); 
-        }
-        .cat-hw { 
-            color: #00e5ff; 
-            border-bottom: 2px solid #00e5ff; 
-            text-shadow: 0 0 15px rgba(0, 229, 255, 0.4); 
-        }
+        .cat-ai { color: var(--muted); border-bottom: 2px solid rgba(255,255,255,0.06); }
+        .cat-eng { color: var(--muted); border-bottom: 2px solid rgba(255,255,255,0.06); }
+        .cat-hw { color: var(--muted); border-bottom: 2px solid rgba(255,255,255,0.06); }
 
         .skill-chips {
             display: flex;
@@ -97,23 +85,11 @@
         .reveal.active { transform: translate(0, 0); opacity: 1; }
 
         /* Badge Hover Effects */
-        .ai-chip:hover { 
-            border-color: var(--accent-blue); 
-            box-shadow: 0 0 25px rgba(0, 212, 255, 0.3); 
-            color: var(--accent-blue);
-            transform: translateY(-5px); 
-        }
-        .eng-chip:hover { 
-            border-color: var(--accent-violet); 
-            box-shadow: 0 0 25px rgba(124, 58, 237, 0.3); 
-            color: var(--accent-violet);
-            transform: translateY(-5px); 
-        }
-        .hw-chip:hover { 
-            border-color: #00e5ff; 
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.3); 
-            color: #00e5ff;
-            transform: translateY(-5px); 
+        .ai-chip:hover, .eng-chip:hover, .hw-chip:hover {
+            border-color: rgba(255,255,255,0.12);
+            box-shadow: 0 12px 34px rgba(0,0,0,0.45);
+            color: var(--text-heading);
+            transform: translateY(-5px);
         }
 
         /* Marquee */
@@ -121,9 +97,8 @@
             width: 100vw;
             overflow: hidden;
             padding: 2.5rem 0;
-            background: rgba(10, 10, 15, 0.6);
-            border-top: 1px solid rgba(0, 212, 255, 0.5); /* thin blue glowing top border */
-            box-shadow: 0 -10px 30px rgba(0, 212, 255, 0.1);
+            background-color: rgba(20,20,20,0.6);
+            border-top: 1px solid rgba(255,255,255,0.03);
             border-bottom: 1px solid var(--glass-border);
             margin-top: 6rem;
             position: relative;
@@ -148,9 +123,10 @@
             height: 100%;
             z-index: 2;
             pointer-events: none;
+            background-color: var(--bg-dark);
         }
-        .marquee-container::before { left: 0; background: linear-gradient(to right, var(--bg-dark), transparent); }
-        .marquee-container::after { right: 0; background: linear-gradient(to left, var(--bg-dark), transparent); }
+        .marquee-container::before { left: 0; }
+        .marquee-container::after { right: 0; }
 
         .marquee-content {
             display: flex;
@@ -173,8 +149,7 @@
         }
 
         .marquee-item:hover {
-            color: var(--accent-blue);
-            text-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+            color: var(--text-heading);
         }
 
         .marquee-separator {
@@ -210,7 +185,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="index.html" class="logo">GS<span style="color:var(--accent-blue)">.</span></a>
+        <a href="index.html" class="logo">GS<span>.</span></a>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
@@ -315,7 +290,7 @@
                 <a href="contact.html">Contact</a>
             </div>
             <p>Copyright © 2025 Gowrishankar S. All rights reserved.</p>
-            <p style="font-family: var(--font-display); color: var(--accent-violet);">"Built with Python, PyTorch, and a lot of caffeine. ☕"</p>
+            
         </footer>
     </main>
 

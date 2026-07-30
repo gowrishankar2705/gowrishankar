@@ -48,10 +48,10 @@
 
         .filter-btn:hover,
         .filter-btn.active {
-            background: rgba(0, 212, 255, 0.1);
+            background: rgba(255,255,255,0.03);
             color: var(--text-heading);
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+            border-color: rgba(255,255,255,0.06);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.45);
         }
 
         /* Bento Grid */
@@ -63,17 +63,15 @@
         }
 
         .project-card {
-            background: rgba(20, 20, 25, 0.6);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2.5rem;
+            background-color: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 1.6rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
             position: relative;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            transition: opacity 0.5s, transform 0.5s;
+            transition: opacity 0.35s, transform 0.35s, box-shadow 0.35s;
         }
 
         /* Featured spans full width */
@@ -128,24 +126,15 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--accent-blue);
+            color: var(--muted);
         }
 
         .project-status {
             font-size: 0.8rem;
-            color: #10b981;
+            color: var(--muted);
             display: flex;
             align-items: center;
             gap: 0.3rem;
-        }
-
-        .project-status::before {
-            content: '';
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10b981;
         }
 
         .status-prototype {
@@ -184,11 +173,11 @@
             content: '';
             position: absolute;
             inset: -2px;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+            background-color: rgba(255,255,255,0.02);
             z-index: -1;
-            border-radius: 22px;
+            border-radius: 18px;
             opacity: 0;
-            transition: opacity 0.4s;
+            transition: opacity 0.35s;
         }
 
         .project-card:hover {
@@ -211,26 +200,16 @@
         }
 
         /* Colored tags based on domain */
-        .tag-cv {
-            border-color: rgba(0, 212, 255, 0.3);
-            color: var(--accent-blue);
-        }
-
-        .tag-edge {
-            border-color: rgba(16, 185, 129, 0.3);
-            color: #10b981;
-        }
-
-        .tag-nlp {
-            border-color: rgba(124, 58, 237, 0.3);
-            color: var(--accent-violet);
+        .tag-cv, .tag-edge, .tag-nlp {
+            border-color: rgba(255,255,255,0.06);
+            color: var(--muted);
         }
     </style>
 </head>
 
 <body>
     <nav class="navbar">
-        <a href="index.html" class="logo">GS<span style="color:var(--accent-blue)">.</span></a>
+        <a href="index.html" class="logo">GS<span>.</span></a>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
@@ -494,8 +473,6 @@
                 <a href="contact.html">Contact</a>
             </div>
             <p>Copyright © 2026 Gowrishankar S. All rights reserved.</p>
-            <p style="font-family: var(--font-display); color: var(--accent-violet);">"Built with Python, PyTorch, and a
-                lot of caffeine. ☕"</p>
         </footer>
     </main>
 

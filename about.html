@@ -35,7 +35,7 @@
         .photo-clip {
             width: 90%;
             height: 90%;
-            background: rgba(10, 10, 15, 0.8);
+            background: transparent;
             clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
             border: 2px solid var(--accent-violet);
             box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
@@ -48,9 +48,16 @@
         }
 
         .photo-clip:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 50px rgba(0, 212, 255, 0.4);
-            border-color: var(--accent-blue);
+            transform: none;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+            border-color: var(--accent-violet);
+        }
+
+        .photo-clip img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         /* Decorative Elements */
@@ -78,6 +85,9 @@
         .headline {
             font-size: clamp(2rem, 4vw, 3.5rem);
             margin-bottom: 1rem;
+            white-space: nowrap;
+            overflow-wrap: normal;
+            word-break: normal;
         }
 
         .bio {
@@ -205,7 +215,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="index.html" class="logo">GS<span style="color:var(--accent-blue)">.</span></a>
+        <a href="index.html" class="logo">GS<span>.</span></a>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html" class="active">About</a>
@@ -233,14 +243,12 @@
             <div class="about-container">
                 <div class="photo-wrapper reveal">
                     <div class="photo-clip">
-                        <!-- Placeholder for portrait, can be filled with an image later -->
-                        <div style="text-align: center; color: var(--text-body); font-family: var(--font-display); opacity: 0.5;">
-                            [PORTRAIT]
+                        <!-- Image container for portrait -->
+                        <div style="width: 100%; height: 100%;">
+                            <img src="assets/projects/IMG_6634.jpg" alt="Gowrishankar portrait">
                         </div>
                     </div>
-                    <div class="decoration dec-1">import torch<br>model = Transformer()</div>
-                    <div class="decoration dec-2">def optimize(loss):<br>&nbsp;&nbsp;loss.backward()</div>
-                    <div class="decoration dec-3">∑</div>
+
                 </div>
 
                 <div class="about-content">
@@ -310,7 +318,7 @@
         </section>
 
         <section class="philosophy reveal">
-            "The best AI isn't the most complex — it's the one that ships and solves a real problem."
+            "தெய்வத்தான் ஆகா தெனினும் முயற்சிதன் மெய்வருத்தக் கூலி தரும்."
         </section>
         
         <footer>
@@ -323,7 +331,6 @@
                 <a href="contact.html">Contact</a>
             </div>
             <p>Copyright © 2026 Gowrishankar S. All rights reserved.</p>
-            <p style="font-family: var(--font-display); color: var(--accent-violet);">"Built with Python, PyTorch, and a lot of caffeine. ☕"</p>
         </footer>
     </main>
 

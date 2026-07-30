@@ -43,10 +43,9 @@
             top: 0;
             left: 50px;
             width: 2px;
-            background: linear-gradient(to bottom, var(--accent-blue), var(--accent-violet));
+            background-color: rgba(255,255,255,0.06);
             z-index: 2;
             height: 0;
-            box-shadow: 0 0 15px var(--accent-blue);
             transition: height 0.3s ease-out;
         }
 
@@ -71,18 +70,18 @@
         }
 
         .timeline-item.active .timeline-node {
-            border-color: var(--accent-blue);
-            background: var(--accent-blue);
-            box-shadow: 0 0 20px var(--accent-blue);
+            border-color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
         }
 
         /* Content Card */
         .timeline-content {
-            background: rgba(25, 25, 30, 0.5);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2.5rem;
-            backdrop-filter: blur(10px);
+            background-color: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(6px);
             position: relative;
             transition: transform 0.4s, box-shadow 0.4s;
             opacity: 0;
@@ -95,9 +94,9 @@
         }
 
         .timeline-content:hover {
-            transform: translateY(-5px) !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-6px) !important;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+            border-color: rgba(255,255,255,0.06);
         }
 
         .timeline-role {
@@ -109,8 +108,8 @@
 
         .timeline-company {
             font-size: 1.2rem;
-            color: var(--accent-blue);
-            font-weight: 500;
+            color: var(--muted);
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
@@ -157,7 +156,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="index.html" class="logo">GS<span style="color:var(--accent-blue)">.</span></a>
+        <a href="index.html" class="logo">GS<span>.</span></a>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
@@ -196,22 +195,38 @@
                         <h3 class="timeline-company">Forge Innovation and Ventures</h3>
                         <div class="timeline-date">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            July 2025 – Present | Coimbatore, TN
+                            July 2025 – June 2026 | Coimbatore, TN
                         </div>
                         <ul class="timeline-list">
                             <li>Architecting and deploying production-ready AI/ML models for low-latency, real-time data environments.</li>
                             <li>Leading end-to-end AI product development from data acquisition to cloud deployment.</li>
                             <li>Implementing MLOps practices: Docker containerization, CI/CD for model versioning.</li>
-                            <li>Contributed to startup product development by transforming ideas into functional solutions through product design,
-validation, iterative development, and user-centric problem solving.</li>
-                            <li>Applied edge computing concepts to design efficient, low-latency solutions for distributed applications and real-world
-intelligent systems</li>
-                            <li>Developed and organized knowledge bases and knowledge graphs to enable structured information management,
-semantic relationships, and AI-driven knowledge retrieval.</li>
-                            <li>Designed and created technical courses and learning resources, translating complex engineering concepts into structured
-educational content for learners and development teams.</li>
-                            <li>Researched, evaluated, and integrated emerging AI, edge computing, and product engineering technologies to accelerate
-innovation and improve solution development.</li>
+                            <li>Contributed to startup product development by transforming ideas into functional solutions through product design, validation, iterative development, and user-centric problem solving.</li>
+                            <li>Applied edge computing concepts to design efficient, low-latency solutions for distributed applications and real-world intelligent systems.</li>
+                            <li>Developed and organized knowledge bases and knowledge graphs to enable structured information management, semantic relationships, and AI-driven knowledge retrieval.</li>
+                            <li>Designed and created technical courses and learning resources, translating complex engineering concepts into structured educational content for learners and development teams.</li>
+                            <li>Researched, evaluated, and integrated emerging AI, edge computing, and product engineering technologies to accelerate innovation and improve solution development.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content">
+                        <h2 class="timeline-role">Engineer</h2>
+                        <h3 class="timeline-company">(Product & AI Engineering)</h3>
+                        <div class="timeline-date">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            July 2026 – Present | Coimbatore, TN
+                        </div>
+                        <ul class="timeline-list">
+                            <li>Architecting and deploying production-ready AI/ML models for low-latency, real-time data environments.</li>
+                            <li>Leading end-to-end AI product development from data acquisition to cloud deployment.</li>
+                            <li>Implementing MLOps practices: Docker containerization, CI/CD for model versioning and model version control.</li>
+                            <li>Works on startup product development and innovation; mentors and consults student startups and early-stage founders.</li>
+                            <li>Applied edge computing concepts to design efficient, low-latency solutions for distributed applications and real-world intelligent systems.</li>
+                            <li>Developed and organized knowledge bases and knowledge graphs to enable structured information management, semantic relationships, and AI-driven knowledge retrieval.</li>
+                            <li>Researched, evaluated, and integrated emerging AI, edge computing, and product engineering technologies to accelerate innovation and improve solution development.</li>
                         </ul>
                     </div>
                 </div>
@@ -220,7 +235,9 @@ innovation and improve solution development.</li>
                 <div class="timeline-item" style="opacity: 0.3;">
                     <div class="timeline-node"></div>
                     <div class="timeline-content" style="padding: 1.5rem; text-align: center;">
-                        <span style="font-family: var(--font-display); color: var(--text-body);">Future Opportunities Connect Here</span>
+                        <a href="contact.html" style="font-family: var(--font-display); color: var(--text-body); text-decoration: underline;">
+                            Future opportunities? Connect here.
+                        </a>
                     </div>
                 </div>
             </div>
@@ -236,7 +253,6 @@ innovation and improve solution development.</li>
                 <a href="contact.html">Contact</a>
             </div>
             <p>Copyright © 2026 Gowrishankar S. All rights reserved.</p>
-            <p style="font-family: var(--font-display); color: var(--accent-violet);">"Built with Python, PyTorch, and a lot of caffeine. ☕"</p>
         </footer>
     </main>
 

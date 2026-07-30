@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#111113" />
+  <g fill="#bfbfc1" font-family="Inter, sans-serif" font-size="48">
+    <text x="60" y="120">Project Image Placeholder</text>
+    <text x="60" y="200" font-size="28" fill="#8f8f92">Replace with your image (1200×800)</text>
+  </g>
+</svg>
